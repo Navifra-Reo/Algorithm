@@ -1,64 +1,29 @@
-#include <iostream>
-#include <Windows.h>
-#include <conio.h>
-using namespace std;
-#define MAX_X 60
-#define MAX_Y 20
-void gotoxy(int x, int y)
+#include<stdio.h>
+#include"RECT.h"
+
+void PrintRect(const RECT *rt);
+void _Width(const RECT *rt);
+void _Height(const RECT *rt);
+
+int main(void)
 {
-    COORD Pos;
-    Pos.X = x;
-    Pos.Y = y;
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), Pos);
+    RECT rect1= {10,20,30,40};
+    PrintRect(&rect1);
+    return 0;
 }
-int main()
+void PrintRect(const RECT *rt)
 {
-    int X = (MAX_X / 2) + 2;
-    int Y = (MAX_Y / 2) + 1;
+    printf("[좌상단점=(%d %d),우하단점=(%d,%d),폭=%d,높이=%d]\n",rt->left,rt->top,rt->right,rt->bottom,_Width(rt),_Height(rt));
+}
 
-    char icon = '+';
-    int keyin = 0;
-    while (1)
-    {
-        gotoxy(0, MAX_Y + 1);
-        cout << "X: " << X << " \n";
-        cout << "Y: " << Y << " \n";
-        cout << "Last keyin value: " << keyin << " \n";
-        gotoxy(X, Y);
-        cout << icon;
-        keyin = _getch();
-        cout << "\b ";
-        switch (keyin)
-        {
-        case 224: // arrow keys
-            keyin = _getch();
-            switch (keyin)
-            {
-            case 72: // up
-                if (Y != 0)
-                    Y--;
-                break;
-            case 75: // left
-                if (X != 0)
-                    X--;
-                break;
-            case 77: // right
-                if (X != MAX_X)
-                    X++;
-                break;
-            case 80: // down
-                if (Y != MAX_Y)
-                    Y++;
-                break;
-            }
-            break;
+int _Width(const RECT *rt)
+{
+    int width = rt->right - rt->left;
+    return width > 0 ? width : -width;
+}
 
-        case 13: // enter
-            icon = '@';
-            break;
-        case 32: // space
-            icon = '#';
-            break;
-        }
-    }
+int _Height(const RECT *rt)
+{
+    int height = rt->bottom - rt->top;
+    return height>0?height:-height;
 }
